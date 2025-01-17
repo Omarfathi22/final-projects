@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!--Main layout-->
+<main>
+    <div class="container">
+        <div class="table-responsive text-nowrap">
+            <h2>Order Summary</h2>
+            <div style="border: 2px solid #ddd; border-radius: 10px; padding: 20px;">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="border: 1px solid #ddd; padding: 10px;">#</th>
+                            <th scope="col" style="border: 1px solid #ddd; padding: 10px;">Item Title</th>
+                            <th scope="col" style="border: 1px solid #ddd; padding: 10px;">Price</th>
+                            <th scope="col" style="border: 1px solid #ddd; padding: 10px;">Quantity</th>
+                            <th scope="col" style="border: 1px solid #ddd; padding: 10px;">Total Item Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order_item in object.items.all %}
+                        <tr>
+                            <th scope="row" style="border: 1px solid #ddd; padding: 10px;">{{ forloop.counter }}</th>
+                            <td style="border: 1px solid #ddd; padding: 10px;">{{ order_item.item.title }}</td>
+                            <td style="border: 1px solid #ddd; padding: 10px;">{{ order_item.item.price }}</td>
+                            <td style="border: 1px solid #ddd; padding: 10px;">
+                                <a href={% url 'core:remove-single-item-from-cart' order_item.item.slug %}><i
+                                        class="fas fa-minus mr-2"></i></a>
+                                {{ order_item.quantity }}
+                                <a href={% url 'core:add_to_cart' order_item.item.slug %}><i
+                                        class="fas fa-plus ml-2"></i></a>
+                            </td>
+                            <td style="border: 1px solid #ddd; padding: 10px;">
+                                {% if order_item.item.discount_price %}
+                                -EGP{{ order_item.get_total_discount_item_price }}
+                                <span class="badge badge-primary">Saving -EGP{{ order_item.get_amount_saved }}</span>
+                                {% else %}
+                                -EGP{{ order_item.get_total_item_price }}
+                                {% endif %}
+                                <a style='color: red;' href={% url 'core:remove_from_cart' order_item.item.slug %}>
+                                    <i class="fas fa-trash float-right"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan='5' style="border: 1px solid #ddd; padding: 10px;">Your Cart is empty</td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" style="border: 1px solid #ddd; padding: 10px;">
+                                <a class='btn btn-primary float-right' href='/' style="border-radius: 5px;">Continue
+                                    Shopping</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        {% if object.coupon %}
+                        <tr>
+                            <td colspan="4" style="border: 1px solid #ddd; padding: 10px;"><b>Coupon</b></td>
+                            <td style="border: 1px solid #ddd; padding: 10px;">-EGP<b>{{ object.coupon.amount }}</b>
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% if object.get_total %}
+                        <tr>
+                            <td colspan="4" style="border: 1px solid #ddd; padding: 10px;"><b>Order Total</b></td>
+                            <td style="border: 1px solid #ddd; padding: 10px;">-EGP<b>{{ object.get_total }}</b></td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" style="border: 1px solid #ddd; padding: 10px;">
+                                <a class='btn btn-warning float-right ml-2' href='/checkout/'
+                                    style="border-radius: 5px;">Proceed to Checkout</a>
+                                <a class='btn btn-primary float-right' href='/' style="border-radius: 5px;">Continue
+                                    Shopping</a>
+                            </td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+<!--Main layout-->
+
+{% endblock content %}

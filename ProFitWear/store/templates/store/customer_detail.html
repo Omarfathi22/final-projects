@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Details</title>
+</head>
+<body>
+    <h1>{{ customer.first_name }} {{ customer.last_name }}</h1>
+    <p>Email: {{ customer.email }}</p>
+    <p>Phone: {{ customer.phone_number }}</p>
+    <p>Address: {{ customer.address }}</p>
+    <p>Joined on: {{ customer.date_joined }}</p>
+    <a href="{% url 'customer_list' %}">Back to Customer List</a>
+</body>
+</html>

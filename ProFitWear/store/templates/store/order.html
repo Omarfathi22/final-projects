@@ -1,0 +1,64 @@
+<!-- order.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Management</title>
+</head>
+<body>
+    <h1>Order Management</h1>
+
+    <!-- عرض قائمة الطلبات -->
+    {% if section == 'list' %}
+        <h2>Order List</h2>
+        <a href="?section=create">Create New Order</a>
+        <ul>
+            {% for order in orders %}
+                <li>
+                    <strong>Order #{{ order.id }}</strong> - Customer: {{ order.customer.first_name }} {{ order.customer.last_name }} - Total: ${{ order.total_price }}
+                    <a href="?section=detail&id={{ order.id }}">View Details</a>
+                    <a href="?section=edit&id={{ order.id }}">Edit</a>
+                </li>
+            {% empty %}
+                <p>No orders available.</p>
+            {% endfor %}
+        </ul>
+
+    <!-- إضافة طلب جديد -->
+    {% elif section == 'create' %}
+        <h2>Create New Order</h2>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Create Order</button>
+        </form>
+        <a href="?section=list">Back to Order List</a>
+
+    <!-- تعديل طلب موجود -->
+    {% elif section == 'edit' %}
+        <h2>Edit Order</h2>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Save Changes</button>
+        </form>
+        <a href="?section=list">Back to Order List</a>
+
+    <!-- عرض تفاصيل الطلب -->
+    {% elif section == 'detail' %}
+        <h2>Order #{{ order.id }} - Customer: {{ order.customer.first_name }} {{ order.customer.last_name }}</h2>
+        <p><strong>Status:</strong> {{ order.status }}</p>
+        <p><strong>Total Price:</strong> ${{ order.total_price }}</p>
+        <h3>Products in Order:</h3>
+        <ul>
+            {% for product in order.products.all %}
+                <li>{{ product.name }} - ${{ product.price }}</li>
+            {% endfor %}
+        </ul>
+        <a href="?section=list">Back to Order List</a>
+        <a href="?section=edit&id={{ order.id }}">Edit</a>
+
+    {% endif %}
+</body>
+</html>

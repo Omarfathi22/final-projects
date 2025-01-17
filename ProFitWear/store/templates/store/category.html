@@ -1,0 +1,57 @@
+<!-- category.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category Management</title>
+</head>
+<body>
+    <h1>Category Management</h1>
+
+    <!-- عرض قائمة الفئات -->
+    {% if section == 'list' %}
+        <h2>Category List</h2>
+        <a href="?section=create">Add New Category</a>
+        <ul>
+            {% for category in categories %}
+                <li>
+                    <strong>{{ category.name }}</strong> - {{ category.description }}
+                    <a href="?section=detail&id={{ category.id }}">View Details</a>
+                    <a href="?section=edit&id={{ category.id }}">Edit</a>
+                </li>
+            {% empty %}
+                <p>No categories available.</p>
+            {% endfor %}
+        </ul>
+
+    <!-- إضافة فئة جديدة -->
+    {% elif section == 'create' %}
+        <h2>Create New Category</h2>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Create Category</button>
+        </form>
+        <a href="?section=list">Back to Category List</a>
+
+    <!-- تعديل فئة موجودة -->
+    {% elif section == 'edit' %}
+        <h2>Edit Category</h2>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Save Changes</button>
+        </form>
+        <a href="?section=list">Back to Category List</a>
+
+    <!-- عرض تفاصيل فئة -->
+    {% elif section == 'detail' %}
+        <h2>{{ category.name }} Details</h2>
+        <p><strong>Description:</strong> {{ category.description }}</p>
+        <a href="?section=list">Back to Category List</a>
+        <a href="?section=edit&id={{ category.id }}">Edit</a>
+
+    {% endif %}
+</body>
+</html>
